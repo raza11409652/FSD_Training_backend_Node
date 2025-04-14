@@ -14,7 +14,9 @@ app.use("/v1", appRoutes);
 
 app.listen(PORT, async () => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({
+      ...(appConfig.environment !== "PROD" ? { force: true } : { alter: true }),
+    });
     console.log("server is up and running ", PORT);
   } catch (er) {
     console.log("ERROR", er);
