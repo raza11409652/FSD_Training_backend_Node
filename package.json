@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
+    "watch:serve": "cross-env NODE_ENV=development ts-node src/app.ts",
+    "prestart": "npm run build",
+    "start": "cross-env NODE_ENV=production node dist/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "pg": "^8.14.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.1",
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.1.9",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

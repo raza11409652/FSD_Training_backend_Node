@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "CommonJS",
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": false,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"] // which files to skip
+}
