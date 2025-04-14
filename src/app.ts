@@ -4,9 +4,12 @@ import appRoutes from "./routes";
 import appConfig from "./config";
 import { sequelize } from "./database/psql";
 import errorHandler from "./error-handler";
+import cors from "cors";
 const PORT = appConfig.port;
 
 const app = express();
+// !!TODO Cors configuration need to be done before moving to prod
+app.use(cors());
 
 app.use(express.json());
 // All apis entry points

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "scripts": {
-    "prebuild":"npm install",
+    "prebuild": "npm install",
     "build": "rimraf dist && tsc",
     "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
     "watch:serve": "cross-env NODE_ENV=development ts-node src/app.ts",
@@ -15,6 +15,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
@@ -23,6 +24,7 @@
     "sequelize": "^6.37.7"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.1",
     "cross-env": "^7.0.3",
