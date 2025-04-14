@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "scripts": {
+    "prebuild":"npm install",
     "build": "rimraf dist && tsc",
     "watch": "nodemon -e ts -w ./src -x npm run watch:serve",
     "watch:serve": "cross-env NODE_ENV=development ts-node src/app.ts",
