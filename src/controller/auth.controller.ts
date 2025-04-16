@@ -1,9 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import  { NextFunction, Request, Response } from "express";
 import { gcAuthentication } from "../google-cloud";
 import gcValidateTokenAuth from "../google-cloud/core/validate.token";
-import { decodeJWTToken } from "../utils/jwt";
-import { GCPJWTTokenPayload } from "../types";
+import { decodeJWTToken, generateToken } from "../utils/jwt";
+import { GCPJWTTokenPayload, JWTToken } from "../types";
 import userService from "../service/user.service";
+import { AppRequest } from "../types/request";
 // import appConfig from "../config";
 // const user
 class AuthController {
@@ -40,15 +41,40 @@ class AuthController {
             email: payload.email,
           });
         }
-        // console.log({id:userData})
 
-        res.send(userData);
+        // console.log({ value: userData?.dataValues.email });
+        let tokenJWT: JWTToken = {
+          email: userData?.dataValues.email as string,
+          role: userData?.dataValues.role as string,
+          type: "SESSION",
+        };
+        const sessionToken = generateToken(tokenJWT);
+        const refreshToken = generateToken({ ...tokenJWT, type: "REFRESH" });
+
+        const URL = `http://localhost:5173/auth/init?session=${sessionToken}&refresh=${refreshToken}`;
+        // res
+        // .cookie(
+        //   "Au",
+        //   { refresh: refreshToken, session: sessionToken },
+        //   {}
+        // )
+        res.redirect(302, URL);
       } else {
         throw new Error("Code is not found in the query param");
       }
     } catch (e) {
       //   console.log("ERROR", e);
       next(e);
+    }
+  }
+
+  async getUserProfile(req: AppRequest, res: Response, next: NextFunction) {
+    try {
+      const email = req.payload?.email || "";
+      const userData = await userService.getUserByEmail(email);
+      res.jsonp(userData);
+    } catch (er) {
+      next(er);
     }
   }
 }

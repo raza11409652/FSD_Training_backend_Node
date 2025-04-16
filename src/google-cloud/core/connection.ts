@@ -10,7 +10,7 @@ export const gcAuthDetails = {
   client_secret: appConfig.gcp.clientSecret,
   redirect_url: appConfig.gcp.redirectURL,
 };
-console.log(gcAuthDetails);
+// console.log(gcAuthDetails);
 const SCOPES = [
   "https://www.googleapis.com/auth/userinfo.email",
   "https://www.googleapis.com/auth/userinfo.profile",

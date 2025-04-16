@@ -23,3 +23,9 @@ export interface GCPJWTTokenPayload {
   iat: number;
   exp: number;
 }
+
+export interface JWTToken {
+  email: string;
+  role: string;
+  type: "SESSION" | "REFRESH";
+}

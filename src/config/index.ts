@@ -17,5 +17,6 @@ const appConfig = {
     clientSecret: process.env.GCP_CLIENT_SECRET || "",
     redirectURL: process.env.GCP_AUTH_REDIRECT || "",
   },
+  jwtToken: process.env.JWT_SECRET_KEY || "",
 };
 export default appConfig;
