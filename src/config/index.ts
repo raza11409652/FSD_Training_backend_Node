@@ -11,5 +11,11 @@ const appConfig = {
     port: process.env.SQL_PORT ? Number(process.env.SQL_PORT) : 5432,
     host: process.env.SQL_HOST || "localhost",
   },
+  gcp: {
+    clientId: process.env.GCP_CLIENT_ID || "",
+    projectId: process.env.GCP_PROJECT_ID || "",
+    clientSecret: process.env.GCP_CLIENT_SECRET || "",
+    redirectURL: process.env.GCP_AUTH_REDIRECT || "",
+  },
 };
 export default appConfig;
