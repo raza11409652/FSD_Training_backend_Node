@@ -26,7 +26,7 @@ class AuthController {
         const token = validateToken.tokens.id_token;
         if (!token) throw new Error("Token not found");
         const payload = decodeJWTToken(token) as GCPJWTTokenPayload;
-        console.log({ payload });
+        // console.log({ payload });
         // This case will not happened
         // if (payload.azp !== appConfig.gcp.clientId)
         //   throw new Error("client ID Mismatched");
@@ -45,13 +45,13 @@ class AuthController {
         }
 
         userData = new Object(userData);
-        console.log({ userData });
+        // console.log({ userData });
         let tokenJWT: JWTToken = {
           email: userData?.["email"] || (userData?.dataValues?.email as string),
           role: userData?.["role"] || (userData?.dataValues?.role as string),
           type: "SESSION",
         };
-        console.log({ tokenJWT });
+        // console.log({ tokenJWT });
         const sessionToken = generateToken(tokenJWT);
         const refreshToken = generateToken({ ...tokenJWT, type: "REFRESH" });
 
