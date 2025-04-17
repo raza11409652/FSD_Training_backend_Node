@@ -1,4 +1,4 @@
-import  { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { gcAuthentication } from "../google-cloud";
 import gcValidateTokenAuth from "../google-cloud/core/validate.token";
 import { decodeJWTToken, generateToken } from "../utils/jwt";
@@ -26,6 +26,7 @@ class AuthController {
         const token = validateToken.tokens.id_token;
         if (!token) throw new Error("Token not found");
         const payload = decodeJWTToken(token) as GCPJWTTokenPayload;
+        console.log({ payload });
         // This case will not happened
         // if (payload.azp !== appConfig.gcp.clientId)
         //   throw new Error("client ID Mismatched");
@@ -42,12 +43,13 @@ class AuthController {
           });
         }
 
-        // console.log({ value: userData?.dataValues.email });
+        console.log({ value: userData?.dataValues.email });
         let tokenJWT: JWTToken = {
           email: userData?.dataValues.email as string,
           role: userData?.dataValues.role as string,
           type: "SESSION",
         };
+        console.log({ tokenJWT });
         const sessionToken = generateToken(tokenJWT);
         const refreshToken = generateToken({ ...tokenJWT, type: "REFRESH" });
 
@@ -63,7 +65,7 @@ class AuthController {
         throw new Error("Code is not found in the query param");
       }
     } catch (e) {
-      //   console.log("ERROR", e);
+      console.log("ERROR", e);
       next(e);
     }
   }
