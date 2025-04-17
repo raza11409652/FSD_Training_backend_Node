@@ -33,7 +33,8 @@ class AuthController {
         // const obj = { email: payload.email };
         // !! case 1 -
         // Scenario on this is a new user
-        let userData = await userService.getUserByEmail(payload.email);
+        let userData: { [key: string]: any } | null =
+          await userService.getUserByEmail(payload.email);
         if (!userData) {
           // Need to create user
           userData = await userService.newUser({
@@ -43,10 +44,11 @@ class AuthController {
           });
         }
 
-        console.log({ value: userData?.dataValues.email });
+        userData = new Object(userData);
+        console.log({ userData });
         let tokenJWT: JWTToken = {
-          email: userData?.dataValues.email as string,
-          role: userData?.dataValues.role as string,
+          email: userData?.["email"] || (userData?.dataValues?.email as string),
+          role: userData?.["role"] || (userData?.dataValues?.role as string),
           type: "SESSION",
         };
         console.log({ tokenJWT });
