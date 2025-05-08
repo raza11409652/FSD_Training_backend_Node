@@ -5,10 +5,7 @@ export const createNewTaskBodyPayload = [
   body("title")
     .isString()
     .withMessage("Title is required and should be a valid String"),
-  body("description")
-    .isString()
-    .optional()
-    .withMessage("Latitude is required in number"),
+  body("description").isString().optional().withMessage("Invalid description"),
   body("project").isNumeric().withMessage("Project is required"),
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -25,10 +22,7 @@ export const updateTaskBodyPayload = [
     .isString()
     .optional()
     .withMessage("Title is required and should be a valid String"),
-  body("description")
-    .isString()
-    .optional()
-    .withMessage("Latitude is required in number"),
+  body("description").isString().optional().withMessage("Invalid description"),
   body("project").optional().isNumeric().withMessage("Project is invalid"),
   body("status")
     .optional()

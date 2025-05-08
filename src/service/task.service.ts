@@ -43,7 +43,11 @@ class TaskService {
   async updateTask(id: number, body: { [key: string]: any }) {
     return this.task.update(body, { where: { id } });
   }
-
+  /**
+   *
+   * @param id
+   * @returns
+   */
   async getTask(id: number) {
     return await this.task.findByPk(id);
   }

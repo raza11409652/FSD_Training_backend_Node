@@ -8,6 +8,12 @@ import { getPagination, getPaginationData } from "../utils/pagination";
  *Projects end point related controllers
  */
 class ProjectController {
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
   async getListOfProjects(req: AppRequest, res: Response, next: NextFunction) {
     try {
       const query: QueryParam = req.query as unknown as QueryParam;
@@ -20,11 +26,76 @@ class ProjectController {
     }
   }
 
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
   async newProjectCreation(req: AppRequest, res: Response, next: NextFunction) {
     try {
       const name = req.body?.["name"];
-      const result = await projectService.saveProject({ name });
+      const description = req.body?.["description"];
+      const createdBy = req.payload?.id;
+
+      const result = await projectService.saveProject({
+        name,
+        description,
+        createdBy,
+      });
       res.jsonp(result);
+    } catch (er) {
+      next(er);
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  async getSingleProject(req: AppRequest, res: Response, next: NextFunction) {
+    try {
+      const taskId = req.params?.["id"];
+      const response = await projectService.getProject(Number(taskId));
+      res.json(response);
+    } catch (er) {
+      next(er);
+    }
+  }
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  async deleteProject(req: AppRequest, res: Response, next: NextFunction) {
+    try {
+      const taskId = req.params?.["id"];
+      const response = await projectService.updateProject(Number(taskId), {
+        isDeleted: true,
+      });
+      res.json({ count: response[0] });
+    } catch (er) {
+      next(er);
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  async updateProject(req: AppRequest, res: Response, next: NextFunction) {
+    try {
+      const taskId = req.params?.["id"];
+      const response = await projectService.updateProject(
+        Number(taskId),
+        req.body
+      );
+      res.json({ count: response[0] });
     } catch (er) {
       next(er);
     }
