@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../database/psql";
 import Project from "./project.model";
+import User from "./user.model";
 // import Project from "./project.model";
 
 // Task Table model schema
@@ -23,6 +24,14 @@ const Task = sequelize.define(
     status: {
       type: DataTypes.STRING,
       defaultValue: "CREATED",
+    },
+    createdBy: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: User,
+        key: "id",
+      },
     },
     assignedTo: {
       type: DataTypes.INTEGER,

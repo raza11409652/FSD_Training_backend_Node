@@ -5,14 +5,29 @@ import { QueryParam } from "../types";
 import { getPagination, getPaginationData } from "../utils/pagination";
 
 class TaskController {
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
   async createNewTask(req: AppRequest, res: Response, next: NextFunction) {
     try {
-      const result = await taskService.newTask(req.body);
+      const result = await taskService.newTask({
+        ...req.body,
+        createdBy: req.payload?.id,
+      });
       res.jsonp(result);
     } catch (er) {
       next(er);
     }
   }
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
 
   async getTaskList(req: AppRequest, res: Response, next: NextFunction) {
     try {
@@ -27,12 +42,48 @@ class TaskController {
     }
   }
 
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
   async deleteTask(req: AppRequest, res: Response, next: NextFunction) {
     try {
       const taskId = req.params?.["id"];
       const result = await taskService.deleteTask(Number(taskId));
-    //   console.log({ taskId });
+      //   console.log({ taskId });
       res.send({ result });
+    } catch (er) {
+      next(er);
+    }
+  }
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  async updateTask(req: AppRequest, res: Response, next: NextFunction) {
+    try {
+      const taskId = req.params?.["id"];
+      const response = await taskService.updateTask(Number(taskId), req.body);
+      res.json({ count: response[0] });
+    } catch (er) {
+      next(er);
+    }
+  }
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+  async getSingleTask(req: AppRequest, res: Response, next: NextFunction) {
+    try {
+      const taskId = req.params?.["id"];
+      const response = await taskService.getTask(Number(taskId));
+      res.json(response);
     } catch (er) {
       next(er);
     }

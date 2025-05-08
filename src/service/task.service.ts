@@ -26,8 +26,26 @@ class TaskService {
     return { count, records };
   }
 
+  /**
+   *
+   * @param id
+   * @returns
+   */
   async deleteTask(id: number) {
     return await this.task.destroy({ where: { id: id } });
+  }
+  /**
+   *
+   * @param id
+   * @param body
+   * @returns
+   */
+  async updateTask(id: number, body: { [key: string]: any }) {
+    return this.task.update(body, { where: { id } });
+  }
+
+  async getTask(id: number) {
+    return await this.task.findByPk(id);
   }
 }
 

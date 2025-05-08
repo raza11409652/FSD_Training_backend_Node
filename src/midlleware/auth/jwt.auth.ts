@@ -20,6 +20,7 @@ const jwtAuthValidationSession = (
       const t = hTokens?.[1];
       const payload = validateJWTToken(t);
       req.payload = payload as JWTToken;
+      // console.log()
       next();
     } else {
       next(new AppError(STATUS_CODES.UN_AUTHORIZED, "Header token not found"));

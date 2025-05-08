@@ -50,11 +50,13 @@ class AuthController {
           email: userData?.["email"] || (userData?.dataValues?.email as string),
           role: userData?.["role"] || (userData?.dataValues?.role as string),
           type: "SESSION",
+          id: userData?.["id"] || (userData?.dataValues?.id as number),
         };
         // console.log({ tokenJWT });
         const sessionToken = generateToken(tokenJWT);
         const refreshToken = generateToken({ ...tokenJWT, type: "REFRESH" });
 
+        console.log({ sessionToken, refreshToken });
         const URL = `http://localhost:5173/auth/init?session=${sessionToken}&refresh=${refreshToken}`;
         // res
         // .cookie(

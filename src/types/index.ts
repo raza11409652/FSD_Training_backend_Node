@@ -28,4 +28,5 @@ export interface JWTToken {
   email: string;
   role: string;
   type: "SESSION" | "REFRESH";
+  id: number;
 }
