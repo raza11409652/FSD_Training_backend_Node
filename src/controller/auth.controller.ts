@@ -56,8 +56,8 @@ class AuthController {
         const sessionToken = generateToken(tokenJWT);
         const refreshToken = generateToken({ ...tokenJWT, type: "REFRESH" });
 
-        console.log({ sessionToken, refreshToken });
-        const URL = `http://localhost:5173/auth/init?session=${sessionToken}&refresh=${refreshToken}`;
+        // console.log({ sessionToken, refreshToken });
+        const URL = `https://fsd-task-mgt.vercel.app/auth/init?session=${sessionToken}&refresh=${refreshToken}`;
         // res
         // .cookie(
         //   "Au",

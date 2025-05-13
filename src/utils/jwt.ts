@@ -9,7 +9,7 @@ const decodeJWTToken = (token: string) => {
 const generateToken = (p: JWTToken) => {
   const KEY =
     p.type === "REFRESH" ? `REF-${appConfig.jwtToken}` : appConfig.jwtToken;
-  const expiresIn = p.type === "REFRESH" ? "30d" : "1h";
+  const expiresIn = p.type === "REFRESH" ? "30d" : "72h";
   // console.log({ KEY, expiresIn });
   const token = jwt.sign(p, KEY, { expiresIn });
   return token;
