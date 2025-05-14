@@ -1,6 +1,7 @@
 export interface QueryParam {
   page: number;
   size: number;
+  project?:number
 }
 export interface GCAuth {
   type: "authorized_user";
