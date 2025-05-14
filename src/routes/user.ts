@@ -15,6 +15,11 @@ userRoutes.put(
   updateUserProfile,
   userController.handleUpdateUserProfile
 );
-userRoutes.post("/", createUserProfile, userController.createUserProfile);
+userRoutes.post(
+  "/",
+  allowedRoles(["ADMIN"]),
+  createUserProfile,
+  userController.createUserProfile
+);
 
 export default userRoutes;
