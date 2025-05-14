@@ -14,6 +14,12 @@ class UserController {
     const response = getPaginationData(counts, query.page, limit, records);
     res.json(response);
   }
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
   async handleUpdateUserProfile(
     req: AppRequest,
     res: Response,
@@ -32,6 +38,24 @@ class UserController {
           .status(STATUS_CODES.BAD_REQUEST)
           .json({ message: "Invalid request" });
       }
+    } catch (er) {
+      next(er);
+    }
+  }
+
+  /**
+   *
+   * @param req
+   * @param res
+   */
+  async createUserProfile(req: AppRequest, res: Response, next: NextFunction) {
+    try {
+      const userData = await userService.newUser({
+        name: req.body.name,
+        email: req.body.email,
+        role: req.body.role,
+      });
+      res.json(userData);
     } catch (er) {
       next(er);
     }

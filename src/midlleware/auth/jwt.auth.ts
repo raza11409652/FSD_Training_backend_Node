@@ -3,8 +3,9 @@ import { AppError, STATUS_CODES } from "../../error-handler/appError";
 import { validateJWTToken } from "../../utils/jwt";
 import { AppRequest } from "../../types/request";
 import { JWTToken } from "../../types";
+import userService from "../../service/user.service";
 
-const jwtAuthValidationSession = (
+const jwtAuthValidationSession = async (
   req: AppRequest,
   _: Response,
   next: NextFunction
@@ -19,8 +20,16 @@ const jwtAuthValidationSession = (
       }
       const t = hTokens?.[1];
       const payload = validateJWTToken(t);
-      req.payload = payload as JWTToken;
+
+      const obj = payload as JWTToken;
+      const userData: { [key: string]: any } | null =
+        await userService.getUserByEmail(obj.email);
       // console.log()
+      req.payload = {
+        ...obj,
+        role: userData?.["role"] || (userData?.dataValues?.role as string),
+      };
+      // console.log(req.payload);
       next();
     } else {
       next(new AppError(STATUS_CODES.UN_AUTHORIZED, "Header token not found"));

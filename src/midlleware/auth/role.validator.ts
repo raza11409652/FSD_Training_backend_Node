@@ -6,7 +6,7 @@ const allowedRoles = (roles: string[] | "*") => {
   return (req: AppRequest, _: Response, next: NextFunction) => {
     try {
       const sessionRole = req.payload?.role as string;
-      //   console.log(sessionRole);
+      // console.log(sessionRole);
       if (Array.isArray(roles) === false && roles === "*") {
         next();
       } else if (roles.includes(sessionRole)) {

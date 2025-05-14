@@ -26,6 +26,7 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+      // validate: { isEmail: true },
     },
   },
   { freezeTableName: true, tableName: "users", timestamps: true }

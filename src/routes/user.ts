@@ -1,10 +1,20 @@
 import { Router } from "express";
 import userController from "../controller/user.controller";
-import { updateUserProfile } from "../midlleware/validators/user.validator";
+import {
+  updateUserProfile,
+  createUserProfile,
+} from "../midlleware/validators/user.validator";
+import allowedRoles from "../midlleware/auth/role.validator";
 
 const userRoutes = Router();
 
-userRoutes.get("/", userController.handleGetUserList);
-userRoutes.put("/:id", updateUserProfile, userController.handleUpdateUserProfile);
+userRoutes.get("/", allowedRoles(["ADMIN"]), userController.handleGetUserList);
+userRoutes.put(
+  "/:id",
+  allowedRoles(["ADMIN"]),
+  updateUserProfile,
+  userController.handleUpdateUserProfile
+);
+userRoutes.post("/", createUserProfile, userController.createUserProfile);
 
 export default userRoutes;

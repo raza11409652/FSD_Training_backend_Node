@@ -9,6 +9,11 @@ class UserService {
       // include: { model: User, as: "users" },
     });
   }
+  /**
+   *
+   * @param o
+   * @returns
+   */
   async newUser(o: { [key: string]: any }) {
     return (await this.user.create(o)).save();
   }
@@ -17,6 +22,7 @@ class UserService {
       limit: limit,
       offset: skip,
       where: filter,
+      order: [["name", "ASC"]],
     });
     const r2 = this.user.count({ where: filter });
     const [records, counts] = await Promise.all([r1, r2]);

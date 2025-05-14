@@ -11,7 +11,7 @@ appRoutes.use("/projects", jwtAuthValidationSession, projectRoutes);
 appRoutes.use("/tasks", jwtAuthValidationSession, taskRoutes);
 // auth is a public accessible URL End Points
 appRoutes.use("/auth", authRoutes);
-appRoutes.use("/users", userRoutes);
+appRoutes.use("/users", jwtAuthValidationSession, userRoutes);
 
 appRoutes.get("/", (_, res) => {
   res.send("OK");
