@@ -5,6 +5,7 @@ import { decodeJWTToken, generateToken } from "../utils/jwt";
 import { GCPJWTTokenPayload, JWTToken } from "../types";
 import userService from "../service/user.service";
 import { AppRequest } from "../types/request";
+import appConfig from "../config";
 // import appConfig from "../config";
 // const user
 class AuthController {
@@ -57,7 +58,8 @@ class AuthController {
         const refreshToken = generateToken({ ...tokenJWT, type: "REFRESH" });
 
         // console.log({ sessionToken, refreshToken });
-        const URL = `https://fsd-task-mgt.vercel.app/auth/init?session=${sessionToken}&refresh=${refreshToken}`;
+        //https://fsd-task-mgt.vercel.app
+        const URL = `${appConfig.frontEndURL}/auth/init?session=${sessionToken}&refresh=${refreshToken}`;
         // res
         // .cookie(
         //   "Au",

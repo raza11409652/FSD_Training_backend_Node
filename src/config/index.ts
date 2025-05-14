@@ -18,5 +18,6 @@ const appConfig = {
     redirectURL: process.env.GCP_AUTH_REDIRECT || "",
   },
   jwtToken: process.env.JWT_SECRET_KEY || "",
+  frontEndURL: process.env.FRONT_END_APP || "http://localhost:5173",
 };
 export default appConfig;
