@@ -47,6 +47,11 @@ const Task = sequelize.define(
         key: "id",
       },
     },
+    dueDate: {
+      type: DataTypes.DATE,
+      defaultValue: null,
+      allowNull: true,
+    },
   },
   { freezeTableName: true, tableName: "tasks", timestamps: true }
 );

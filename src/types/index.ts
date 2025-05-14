@@ -1,7 +1,7 @@
 export interface QueryParam {
   page: number;
   size: number;
-  project?:number
+  project?: number;
 }
 export interface GCAuth {
   type: "authorized_user";
@@ -31,3 +31,6 @@ export interface JWTToken {
   type: "SESSION" | "REFRESH";
   id: number;
 }
+export type UserRole = "ADMIN" | "TASK_CREATOR" | "USER";
+export const allowedRoles = ["ADMIN", "TASK_CREATOR", "USER"];
+// export typeof allowedRoles

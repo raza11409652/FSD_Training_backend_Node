@@ -1,11 +1,12 @@
 import { NextFunction, Response } from "express";
 import { AppRequest } from "../../types/request";
 import { AppError, STATUS_CODES } from "../../error-handler/appError";
+import { UserRole } from "../../types";
 
-const allowedRoles = (roles: string[] | "*") => {
+const allowedRoles = (roles: UserRole[] | "*") => {
   return (req: AppRequest, _: Response, next: NextFunction) => {
     try {
-      const sessionRole = req.payload?.role as string;
+      const sessionRole = req.payload?.role as UserRole;
       // console.log(sessionRole);
       if (Array.isArray(roles) === false && roles === "*") {
         next();

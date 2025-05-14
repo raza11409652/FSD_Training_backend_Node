@@ -74,6 +74,7 @@ class TaskController {
   async updateTask(req: AppRequest, res: Response, next: NextFunction) {
     try {
       const taskId = req.params?.["id"];
+      // console.log(req.body);
       const response = await taskService.updateTask(Number(taskId), req.body);
       res.json({ count: response[0] });
     } catch (er) {

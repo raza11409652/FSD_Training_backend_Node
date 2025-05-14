@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { body, validationResult } from "express-validator";
+import { body, matchedData, validationResult } from "express-validator";
 
 export const updateUserProfile = [
   body("role")
@@ -19,6 +19,7 @@ export const updateUserProfile = [
     if (errors.array().length > 0) {
       res.status(400).jsonp({ error: true, errors });
     } else {
+      req.body = matchedData(req);
       next();
     }
   },
@@ -48,6 +49,7 @@ export const createUserProfile = [
     if (errors.array().length > 0) {
       res.status(400).jsonp({ error: true, errors });
     } else {
+      req.body = matchedData(req);
       next();
     }
   },

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { body, validationResult } from "express-validator";
+import { body, matchedData, validationResult } from "express-validator";
 
 export const createNewProjectBodyPayload = [
   body("name")
@@ -14,6 +14,8 @@ export const createNewProjectBodyPayload = [
     if (errors.array().length > 0) {
       res.status(400).jsonp({ error: true, errors });
     } else {
+      req.body = matchedData(req);
+
       next();
     }
   },
@@ -33,6 +35,8 @@ export const updateProjectBodyPayload = [
     if (errors.array().length > 0) {
       res.status(400).jsonp({ error: true, errors });
     } else {
+      req.body = matchedData(req);
+
       next();
     }
   },
