@@ -3,6 +3,7 @@ import { AppRequest } from "../types/request";
 import { QueryParam } from "../types";
 import projectService from "../service/project.service";
 import { getPagination, getPaginationData } from "../utils/pagination";
+import taskService from "../service/task.service";
 
 /**
  *Projects end point related controllers
@@ -76,6 +77,9 @@ class ProjectController {
       const response = await projectService.updateProject(Number(taskId), {
         isDeleted: true,
       });
+      taskService
+        .updateTaskUsingFilter({ project: Number(taskId) }, { isDeleted: true })
+        .then((a) => console.log(`task updated`, a));
       res.json({ count: response[0] });
     } catch (er) {
       next(er);

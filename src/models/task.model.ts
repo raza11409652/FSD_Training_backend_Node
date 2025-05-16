@@ -54,6 +54,11 @@ const Task = sequelize.define(
       defaultValue: null,
       allowNull: true,
     },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: true,
+    },
   },
   { freezeTableName: true, tableName: "tasks", timestamps: true }
 );

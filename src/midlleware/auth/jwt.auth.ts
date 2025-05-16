@@ -1,9 +1,8 @@
 import { NextFunction, Response } from "express";
 import { AppError, STATUS_CODES } from "../../error-handler/appError";
-import { validateJWTToken } from "../../utils/jwt";
 import { AppRequest } from "../../types/request";
-import { JWTToken } from "../../types";
 import userService from "../../service/user.service";
+import { validateGoogleIdToken } from "../../google-cloud/core/validate.token";
 
 const jwtAuthValidationSession = async (
   req: AppRequest,
@@ -19,17 +18,16 @@ const jwtAuthValidationSession = async (
         throw new Error("Invalid session type");
       }
       const t = hTokens?.[1];
-      const payload = validateJWTToken(t);
-
-      const obj = payload as JWTToken;
+      const payload = await validateGoogleIdToken(t);
       const userData: { [key: string]: any } | null =
-        await userService.getUserByEmail(obj.email);
-      // console.log()
+        await userService.getUserByEmail(payload.email);
+      if (!userData) throw new Error("Invalid request");
       req.payload = {
-        ...obj,
-        role: userData?.["role"] || (userData?.dataValues?.role as string),
+        email: payload.email,
+        role: userData?.["role"],
+        type: "SESSION",
+        id: userData?.id,
       };
-      // console.log(req.payload);
       next();
     } else {
       next(new AppError(STATUS_CODES.UN_AUTHORIZED, "Header token not found"));

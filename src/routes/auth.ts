@@ -16,4 +16,6 @@ authRoutes.get(
 //     authController.getUserProfile
 //   );
 
+authRoutes.post("/refresh", authController.handleRefreshToken);
+
 export default authRoutes;

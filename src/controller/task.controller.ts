@@ -39,6 +39,7 @@ class TaskController {
         {
           ...(project && { project: Number(project) }),
           ...(role === "USER" && { assignedTo: Number(req.payload?.id) }),
+          isDeleted: false,
         },
         limit,
         skip

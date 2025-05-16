@@ -51,6 +51,18 @@ class TaskService {
   async getTask(id: number) {
     return await this.task.findByPk(id);
   }
+  /**
+   *
+   * @param filter
+   * @param body
+   * @returns
+   */
+  async updateTaskUsingFilter(
+    filter: { [key: string]: any },
+    body: { [key: string]: any }
+  ) {
+    return this.task.update(body, { where: filter });
+  }
 }
 
 const taskService = new TaskService(Task);

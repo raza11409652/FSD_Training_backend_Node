@@ -1,11 +1,18 @@
 import { NextFunction, Request, Response } from "express";
-import { gcAuthentication } from "../google-cloud";
-import gcValidateTokenAuth from "../google-cloud/core/validate.token";
-import { decodeJWTToken, generateToken } from "../utils/jwt";
-import { GCPJWTTokenPayload, JWTToken } from "../types";
+import {
+  gcAuthentication,
+  gcGetAuthFromJson,
+  gcRefreshAccessToken,
+  gcValidateTokenAuth,
+} from "../google-cloud";
+
+import { decodeJWTToken } from "../utils/jwt";
+import { GCPJWTTokenPayload } from "../types";
 import userService from "../service/user.service";
 import { AppRequest } from "../types/request";
 import appConfig from "../config";
+import { AppError, STATUS_CODES } from "../error-handler/appError";
+import getPermission from "../data/permission";
 // import appConfig from "../config";
 // const user
 class AuthController {
@@ -23,8 +30,14 @@ class AuthController {
       const code = query.code || "";
       if (code) {
         // console.log(code);
-        const validateToken = await gcValidateTokenAuth(code as string);
-        const token = validateToken.tokens.id_token;
+        const { tokens } = await gcValidateTokenAuth(code as string);
+        const token = tokens.id_token;
+        const refreshToken = tokens.refresh_token || "";
+        // const { tokens } = await oAuth2Client.getToken(code);
+
+        // Store the tokens securely
+        console.log("Access Token:", tokens.access_token);
+        console.log("Refresh Token:", tokens.refresh_token);
         if (!token) throw new Error("Token not found");
         const payload = decodeJWTToken(token) as GCPJWTTokenPayload;
         // console.log({ payload });
@@ -38,35 +51,45 @@ class AuthController {
           await userService.getUserByEmail(payload.email);
         if (!userData) {
           // Need to create user
-          userData = await userService.newUser({
-            name: payload.name,
-            profileImage: payload.picture,
-            email: payload.email,
-          });
+          // userData = await userService.newUser({
+          //   name: payload.name,
+          //   profileImage: payload.picture,
+          //   email: payload.email,
+          // });
+          // If user is not present in the database prevent the signup process
+          console.log({ userData, token, refreshToken }, "USER DON'T EXIST");
+          res.redirect(
+            302,
+            `${appConfig.frontEndURL}?error_status=403&message=LOGIN_FAILED`
+          );
+        } else {
+          console.log({ userData, token, refreshToken, tokens }, "USER EXIST");
+
+          const URL = `${appConfig.frontEndURL}/auth/init?session=${token}&refresh=${refreshToken}`;
+          res.redirect(302, URL);
         }
 
-        userData = new Object(userData);
-        // console.log({ userData });
-        let tokenJWT: JWTToken = {
-          email: userData?.["email"] || (userData?.dataValues?.email as string),
-          role: userData?.["role"] || (userData?.dataValues?.role as string),
-          type: "SESSION",
-          id: userData?.["id"] || (userData?.dataValues?.id as number),
-        };
-        // console.log({ tokenJWT });
-        const sessionToken = generateToken(tokenJWT);
-        const refreshToken = generateToken({ ...tokenJWT, type: "REFRESH" });
+        // userData = new Object(userData);
+        // // console.log({ userData });
+        // let tokenJWT: JWTToken = {
+        //   email: userData?.["email"] || (userData?.dataValues?.email as string),
+        //   role: userData?.["role"] || (userData?.dataValues?.role as string),
+        //   type: "SESSION",
+        //   id: userData?.["id"] || (userData?.dataValues?.id as number),
+        // };
+        // // console.log({ tokenJWT });
+        // const sessionToken = generateToken(tokenJWT);
+        // const refreshToken = generateToken({ ...tokenJWT, type: "REFRESH" });
 
         // console.log({ sessionToken, refreshToken });
         //https://fsd-task-mgt.vercel.app
-        const URL = `${appConfig.frontEndURL}/auth/init?session=${sessionToken}&refresh=${refreshToken}`;
+
         // res
         // .cookie(
         //   "Au",
         //   { refresh: refreshToken, session: sessionToken },
         //   {}
         // )
-        res.redirect(302, URL);
       } else {
         throw new Error("Code is not found in the query param");
       }
@@ -79,12 +102,48 @@ class AuthController {
   async getUserProfile(req: AppRequest, res: Response, next: NextFunction) {
     try {
       const email = req.payload?.email || "";
-      const userData = await userService.getUserByEmail(email);
-      res.jsonp(userData);
+      const userData: { [key: string]: any } | null =
+        await userService.getUserByEmail(email);
+      const role = userData?.["role"] || "";
+      if (!role) throw new Error("Role is not retrieved");
+      const permission = getPermission(role);
+      res.jsonp({ user: userData, permission });
     } catch (er) {
       next(er);
     }
   }
+  /**
+   *
+   * @param req
+   * @param res
+   * @param next
+   */
+
+  async handleRefreshToken(req: AppRequest, res: Response, next: NextFunction) {
+    try {
+      const token = req.body.token || "";
+      if (!token)
+        throw new AppError(
+          STATUS_CODES.UN_AUTHORIZED,
+          "TOKEN is not present in the request"
+        );
+      const _res = gcGetAuthFromJson({
+        client_id: appConfig.gcp.clientId,
+        client_secret: appConfig.gcp.clientSecret,
+        type: "authorized_user",
+        refresh_token: token,
+      });
+      const { credentials } = await gcRefreshAccessToken(_res.credentials);
+      res.json({
+        sessionToken: credentials.id_token,
+        refreshToken: credentials.access_token,
+      });
+    } catch (er: any) {
+      next(new AppError(STATUS_CODES.UN_AUTHORIZED, er.message));
+    }
+  }
 }
+
 const authController = new AuthController();
+
 export default authController;
