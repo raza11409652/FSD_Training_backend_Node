@@ -40,7 +40,7 @@ const Task = sequelize.define(
         key: "id",
       },
     },
-    project: {
+    projectId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       //   references: "projects",
@@ -62,4 +62,8 @@ const Task = sequelize.define(
   },
   { freezeTableName: true, tableName: "tasks", timestamps: true }
 );
+
+Task.belongsTo(User, { targetKey: "id", foreignKey: "assignedTo" });
+Task.belongsTo(Project, { targetKey: "id", foreignKey: "projectId" });
+
 export default Task;

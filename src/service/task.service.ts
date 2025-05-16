@@ -1,4 +1,6 @@
+import Project from "../models/project.model";
 import Task from "../models/task.model";
+import User from "../models/user.model";
 
 class TaskService {
   constructor(private readonly task: typeof Task) {}
@@ -20,7 +22,18 @@ class TaskService {
    * @returns
    */
   async getTasks(filter = {}, limit: number, skip: number) {
-    const r1 = this.task.findAll({ where: filter, limit: limit, offset: skip });
+    const r1 = this.task.findAll({
+      where: filter,
+      limit: limit,
+      offset: skip,
+      include: [
+        { model: User, foreignKey: "assignedTo", attributes: ["id", "name"] },
+        { model: Project, foreignKey: "projectId", attributes: ["id", "name"] },
+      ],
+      // include: [{ model: Project, foreignKey: "assignedTo" }],
+    });
+
+    // const r1 = this.task.sequelize?.query(query);
     const r2 = this.task.count({ where: filter });
     const [count, records] = await Promise.all([r2, r1]);
     return { count, records };

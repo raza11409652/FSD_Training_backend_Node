@@ -16,6 +16,7 @@ class TaskController {
       const result = await taskService.newTask({
         ...req.body,
         createdBy: req.payload?.id,
+        projectId: req.body.project,
       });
       res.jsonp(result);
     } catch (er) {
@@ -37,7 +38,7 @@ class TaskController {
       const { limit, skip } = getPagination(query.page || 1, query.size || 10);
       const { records, count } = await taskService.getTasks(
         {
-          ...(project && { project: Number(project) }),
+          ...(project && { projectId: Number(project) }),
           ...(role === "USER" && { assignedTo: Number(req.payload?.id) }),
           isDeleted: false,
         },
@@ -78,7 +79,14 @@ class TaskController {
     try {
       const taskId = req.params?.["id"];
       // console.log(req.body);
-      const response = await taskService.updateTask(Number(taskId), req.body);
+      const response = await taskService.updateTask(Number(taskId), {
+        ...req.body,
+        ...(req.body.project
+          ? {
+              projectId: req.body.project,
+            }
+          : {}),
+      });
       res.json({ count: response[0] });
     } catch (er) {
       next(er);
