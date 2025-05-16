@@ -37,6 +37,10 @@ const Task = sequelize.define(
       type: DataTypes.INTEGER,
       defaultValue: null,
       allowNull: true,
+      references: {
+        model: User,
+        key: "id",
+      },
     },
     project: {
       type: DataTypes.INTEGER,

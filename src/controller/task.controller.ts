@@ -31,12 +31,14 @@ class TaskController {
 
   async getTaskList(req: AppRequest, res: Response, next: NextFunction) {
     try {
+      const role = req.payload?.role || "USER";
       const query = req.query as unknown as QueryParam;
       const project = req.query?.project || undefined;
       const { limit, skip } = getPagination(query.page || 1, query.size || 10);
       const { records, count } = await taskService.getTasks(
         {
           ...(project && { project: Number(project) }),
+          ...(role === "USER" && { assignedTo: Number(req.payload?.id) }),
         },
         limit,
         skip

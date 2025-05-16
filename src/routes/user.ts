@@ -8,7 +8,7 @@ import allowedRoles from "../midlleware/auth/role.validator";
 
 const userRoutes = Router();
 
-userRoutes.get("/", allowedRoles(["ADMIN"]), userController.handleGetUserList);
+userRoutes.get("/", userController.handleGetUserList);
 userRoutes.put(
   "/:id",
   allowedRoles(["ADMIN"]),
