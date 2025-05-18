@@ -32,12 +32,12 @@ class AuthController {
         // console.log(code);
         const { tokens } = await gcValidateTokenAuth(code as string);
         const token = tokens.id_token;
-        const refreshToken = tokens.refresh_token || "";
+        // const refreshToken = tokens.refresh_token || "";
         // const { tokens } = await oAuth2Client.getToken(code);
 
         // Store the tokens securely
-        console.log("Access Token:", tokens.access_token);
-        console.log("Refresh Token:", tokens.refresh_token);
+        // console.log("Access Token:", tokens.access_token);
+        // console.log("Refresh Token:", tokens.refresh_token);
         if (!token) throw new Error("Token not found");
         const payload = decodeJWTToken(token) as GCPJWTTokenPayload;
         // console.log({ payload });
@@ -57,15 +57,14 @@ class AuthController {
           //   email: payload.email,
           // });
           // If user is not present in the database prevent the signup process
-          console.log({ userData, token, refreshToken }, "USER DON'T EXIST");
+          // console.log({ userData, token, refreshToken }, "USER DON'T EXIST");
           res.redirect(
             302,
             `${appConfig.frontEndURL}?error_status=403&message=LOGIN_FAILED`
           );
         } else {
-          console.log({ userData, token, refreshToken, tokens }, "USER EXIST");
-
-          const URL = `${appConfig.frontEndURL}/auth/init?session=${token}&refresh=${refreshToken}`;
+          // console.log({ userData, token, refreshToken, tokens }, "USER EXIST");
+          const URL = `${appConfig.frontEndURL}/auth/init?session=${token}&refresh=${tokens.access_token}`;
           res.redirect(302, URL);
         }
 
