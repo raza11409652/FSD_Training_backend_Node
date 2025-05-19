@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import {
   gcAuthentication,
-  gcGetAuthFromJson,
   gcRefreshAccessToken,
   gcValidateTokenAuth,
 } from "../google-cloud";
@@ -63,7 +62,7 @@ class AuthController {
             `${appConfig.frontEndURL}?error_status=403&message=LOGIN_FAILED`
           );
         } else {
-          // console.log({ userData, token, refreshToken, tokens }, "USER EXIST");
+          console.log({ userData, token, tokens }, "USER EXIST");
           const URL = `${appConfig.frontEndURL}/auth/init?session=${token}&refresh=${tokens.access_token}`;
           res.redirect(302, URL);
         }
@@ -126,18 +125,23 @@ class AuthController {
           STATUS_CODES.UN_AUTHORIZED,
           "TOKEN is not present in the request"
         );
-      const _res = gcGetAuthFromJson({
-        client_id: appConfig.gcp.clientId,
-        client_secret: appConfig.gcp.clientSecret,
-        type: "authorized_user",
-        refresh_token: token,
-      });
-      const { credentials } = await gcRefreshAccessToken(_res.credentials);
+      console.log(appConfig.gcp);
+      // const _res = gcGetAuthFromJson({
+      //   client_id: appConfig.gcp.clientId,
+      //   client_secret: appConfig.gcp.clientSecret,
+      //   type: "authorized_user",
+      //   refresh_token: token,
+      // });
+      // console.log({ _res });
+      const { credentials } = (await gcRefreshAccessToken(token)) || {
+        credentials: { id_token: null, access_token: null },
+      };
       res.json({
         sessionToken: credentials.id_token,
         refreshToken: credentials.access_token,
       });
     } catch (er: any) {
+      console.log(er);
       next(new AppError(STATUS_CODES.UN_AUTHORIZED, er.message));
     }
   }

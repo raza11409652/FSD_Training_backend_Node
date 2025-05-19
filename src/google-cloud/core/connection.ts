@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import { GCAuth } from "../../types";
 import appConfig from "../../config";
+// import { JWT } from "google-auth-library";
 export const gcAuthDetails = {
   client_id: appConfig.gcp.clientId,
   project_id: appConfig.gcp.projectId,
@@ -19,10 +20,20 @@ export const gcAuthClient = () => {
 const gcAuthentication = async () => {
   const oauth2Client = gcAuthClient();
   const url = oauth2Client.generateAuthUrl({
-    access_type: "offline",
+    access_type: "online",
     scope: SCOPES,
   });
   return url;
+  // const client = new JWT({
+  //   project_id: gcAuthDetails.project_id,
+  //   clientId: gcAuthDetails.client_id,
+  //   clientSecret: gcAuthDetails.client_secret,
+  //   redirectUri: gcAuthDetails.redirect_url,
+  // });
+
+  // const res = client.generateAuthUrl({ scopes: scop });
+  // // console.log(res.data);
+  // return res;
 };
 export default gcAuthentication;
 

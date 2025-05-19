@@ -1,4 +1,4 @@
-import { Credentials, OAuth2Client } from "google-auth-library";
+import { OAuth2Client } from "google-auth-library";
 import { gcAuthClient } from "./connection";
 import appConfig from "../../config";
 import { GCPJWTTokenPayload } from "../../types";
@@ -9,13 +9,14 @@ const gcValidateTokenAuth = async (t: string) => {
   return cred;
 };
 
-export const gcRefreshAccessToken = (cred: Credentials) => {
+export const gcRefreshAccessToken = async (token: string) => {
   // const oauth2Client = gcAuthClient();
   // oauth2Client.setCredentials(cred);
   // const obj = oauth2Client.refreshAccessToken();
-  const client = new OAuth2Client();
-  client.setCredentials(cred);
-  const obj = client.refreshAccessToken();
+  const client = gcAuthClient();
+  client.setCredentials({ refresh_token: token });
+  // client.setCredentials(cred);
+  const obj = client ? await client.refreshAccessToken() : null;
   return obj;
 };
 /**
